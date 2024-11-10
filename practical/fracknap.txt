@@ -1,0 +1,47 @@
+class KnapsackPackage(object):
+    def __init__ (self,weight,value):
+        self.weight=weight
+        self.value=value
+        self.cost=value/weight
+    def __lt__ (self,other):
+        return self.cost < other.cost
+class FractionalKnapsack(object):
+    def KnapsackGreedyProc(self,W,V,M,n):
+        packs=[]
+        for i in range(n):
+            packs.append(KnapsackPackage(W[i],V[i]))
+        packs.sort(reverse=True)
+        remain=M
+        result=0
+        i=0
+        stopProc=False
+        while(stopProc!=True):
+            if i>=n:
+                stopProc=True
+                break
+            if packs[i].weight<=remain:
+                remain=remain-packs[i].weight
+                result=result+packs[i].value
+                print("packs",i,"-weight:",packs[i].weight,"-value:",packs[i].value)
+
+            else:
+                fraction=remain/packs[i].weight
+                result=result+packs[i].value*fraction
+                print("packs",i,"-weight:",packs[i].weight*fraction,"-value:",packs[i].value*fraction)
+                stopProc=True
+            i=i+1
+        print("max value:",result)
+if __name__ =="__main__":
+    W=[]
+    V=[]
+    num=int(input("enter the number of weight and values required:"))
+    for i in range(num):
+        n=int(input(f"enter the W{i+1}:"))
+        W.append(n)
+    for i in range(num):
+        n=int(input(f"enter the v{i+1}:"))
+        V.append(n)
+    M=int(input('enter cost:'))
+    n=len(V)
+    proc=FractionalKnapsack()
+    proc.KnapsackGreedyProc(W,V,M,n)

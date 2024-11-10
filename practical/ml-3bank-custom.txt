@@ -1,0 +1,118 @@
+# Import necessary libraries
+
+import pandas as pd
+
+from sklearn.model_selection 
+import train_test_split
+from sklearn.preprocessing 
+import StandardScaler, LabelEncoder
+
+from tensorflow.keras.models 
+import Sequential
+from tensorflow.keras.layers 
+import Dense
+from sklearn.metrics 
+import accuracy_score, confusion_matrix
+
+
+# Load the dataset
+
+data = pd.read_csv('Churn_Modelling.csv')
+
+
+# Drop irrelevant columns
+
+data_cleaned = data.drop(columns=['RowNumber', 'CustomerId', 'Surname'])
+
+
+# Encode categorical columns
+
+label_encoder_gender = LabelEncoder()
+
+data_cleaned['Gender'] = label_encoder_gender.fit_transform(data_cleaned['Gender'])
+
+
+label_encoder_geo = LabelEncoder()
+data_cleaned['Geography'] = label_encoder_geo.fit_transform(data_cleaned['Geography'])
+
+
+# Separate features (X) and target (y)
+
+X = data_cleaned.drop('Exited', axis=1)
+y = data_cleaned['Exited']
+
+
+# Split the data into training and testing sets
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+# Normalize the data using
+StandardScaler
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(X_train)
+
+X_test_scaled = scaler.transform(X_test)
+
+
+# Initialize the neural network
+
+model = Sequential()
+
+
+# Input layer and first hidden layer (using ReLU activation)
+
+model.add(Dense(units=10, activation='relu', input_dim=X_train_scaled.shape[1]))
+
+model.add(Dense(units=8, activation='relu'))
+
+
+# Output layer (using sigmoid activation for binary classification)
+model.add(Dense(units=1, activation='sigmoid'))
+
+
+# Compile the model
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+
+# Train the model
+
+history = model.fit(X_train_scaled, y_train, epochs=20, batch_size=32, validation_split=0.2)  
+# Corrected validation_split
+
+
+# Make predictions on the test 
+set
+y_pred_prob = model.predict(X_test_scaled)
+y_pred = (y_pred_prob > 0.5).astype(int)
+
+
+# Calculate accuracy
+
+accuracy = accuracy_score(y_test, y_pred)
+
+# Generate confusion matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+# Print results
+print("Accuracy:", accuracy)
+print("Confusion Matrix:\n", conf_matrix)
+
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
+
+plt.xlabel('Predicted')
+
+plt.ylabel('True')
+
+plt.title('Confusion Matrix')
+
+plt.show()

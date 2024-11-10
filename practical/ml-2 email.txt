@@ -1,0 +1,33 @@
+Classify the email using the binary classification method. Email Spam detection has two states: a) Normal State – Not Spam, b) Abnormal State – Spam.
+Use K-Nearest Neighbors and Support Vector Machine for classification. Analyze their performance.
+Dataset link: The emails.csv dataset on the Kaggle
+https://www.kaggle.com/datasets/balaka18/email-spam-classification-dataset-csv
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import confusion_matrix,accuracy_score,precision_score,recall_score
+df=pd.read_csv(r"C:\Users\User\Desktop\emails.csv")
+df
+df.head(10)
+df.tail(10)
+X=df.drop(columns=["Email No.","Prediction"])
+Y=df["Prediction"]
+X,Y
+X_train,X_test,Y_train,Y_test=train_test_split(X,Y,test_size=0.2,random_state=42)
+knn=KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train,Y_train)
+Y_pred_knn=knn.predict(X_test)
+svm=SVC(kernel="linear")
+svm.fit(X_train,Y_train)
+Y_pred_svm=svm.predict(X_test)
+
+confusion_matrix_knn=confusion_matrix(Y_test,Y_pred_knn)
+print("Confusion Matrix:",confusion_matrix_knn)
+accuracy_knn=accuracy_score(Y_test,Y_pred_knn)
+print("Accuracy:",accuracy_knn)
+confusion_matrix_svm=confusion_matrix(Y_test,Y_pred_svm)
+print("Confusion Matrix:",confusion_matrix_svm)
+accuracy_svm=accuracy_score(Y_test,Y_pred_svm)
+print("Accuracy:",accuracy_svm)
+

@@ -1,0 +1,62 @@
+Predict the price of the Uber ride from a given pickup point to the agreed drop-off location.
+Perform following tasks:
+1. Pre-process the dataset.
+2. Identify outliers.
+3. Check the correlation.
+4. Implement linear regression and random forest regression models.
+5. Evaluate the models and compare their respective scores like R2, RMSE, etc.
+Dataset link: https://www.kaggle.com/datasets/yasserh/uber-fares-dataset
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+df=pd.read_csv(r"C:\Users\User\Desktop\uber.csv")
+df
+df.head(10)
+df.tail(10)
+df.info()
+df.describe()
+df.shape
+df.isnull().sum()
+df.dropna(inplace=True)
+df.isnull().sum()
+df=df.drop(columns=["pickup_datetime","key"],axis=1)
+df.describe()
+plt.figure(figsize=(10, 8))
+sns.boxplot(x=df['fare_amount'])
+plt.title('Boxplot for Fare Amount')
+plt.show()
+correlation_matrix = df.corr()
+plt.figure(figsize=(10, 8))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
+plt.title('Correlation Matrix')
+plt.show()
+X = df.drop('fare_amount', axis=1)
+y = df['fare_amount']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+linear_model = LinearRegression()
+linear_model.fit(X_train, y_train)
+y_pred_linear = linear_model.predict(X_test)
+random_forest_model = RandomForestRegressor(n_estimators=100, random_state=42)
+random_forest_model.fit(X_train, y_train)
+y_pred_rf = random_forest_model.predict(X_test)
+r2_linear = r2_score(y_test, y_pred_linear)
+rmse_linear = np.sqrt(mean_squared_error(y_test, y_pred_linear))
+mae_linear = mean_absolute_error(y_test, y_pred_linear)
+print("Linear Regression Performance:")
+print("R-squared:", r2_linear)
+print("RMSE:", rmse_linear)
+print("MAE:", mae_linear)
+r2_rf = r2_score(y_test, y_pred_rf)
+rmse_rf = np.sqrt(mean_squared_error(y_test, y_pred_rf))
+mae_rf = mean_absolute_error(y_test, y_pred_rf)
+
+print("\nRandom Forest Regression Performance:")
+print("R-squared:", r2_rf)
+print("RMSE:", rmse_rf)
+print("MAE:", mae_rf)

@@ -1,0 +1,26 @@
+Implement K-Nearest Neighbors algorithm on diabetes.csv dataset. Compute confusion matrix, accuracy, error rate, precision and recall on the given dataset.
+Dataset link : https://www.kaggle.com/datasets/abdallamahgoub/diabetes
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score,recall_score
+df=pd.read_csv(r"C:\Users\User\Desktop\Diabetes.csv")
+df
+df.head(10)
+X=df.drop("Outcome",axis=1)
+Y=df["Outcome"]
+X,Y
+X_train,X_test,Y_train,Y_test=train_test_split(X,Y,test_size=0.2,random_state=42)
+knn=KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train,Y_train)
+Y_pred=knn.predict(X_test)
+con_matrix=confusion_matrix(Y_test,Y_pred)
+print("Confusion Matrix:",con_matrix)
+accur_score=accuracy_score(Y_test,Y_pred)
+print("Accuracy score:",accur_score)
+error_rate=(1-accur_score)
+print("Error_rate:",error_rate)
+precision = precision_score(Y_test,Y_pred)
+print("Precision_score:",precision)
+recall = recall_score(Y_test,Y_pred)
+print("recall_score:",recall)
